@@ -1,0 +1,12 @@
+body {
+    text-align: center;
+}
+.buttons{
+    margin: 20px;
+}
+.dice {
+    margin: 20px;
+}
+.hidden{
+    display: none;
+}

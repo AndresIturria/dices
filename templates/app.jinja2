@@ -1,0 +1,96 @@
+{% extends 'base.jinja2' %}
+{% block head %}
+    <title>Dices</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.16.1.min.js"></script>
+    <link rel="stylesheet"href="{{ url_for('static', filename='css/app.css') }}">
+{% endblock %}
+{% block content %}
+    <button type="button" class="buttons" onclick="updateNumbers({{ diceNumber }})">Roll Dices</button>
+    {% for number in range(diceNumber) %}
+        <div class="dice"> <p id="dice{{ number }}"></p> </div>
+    {% endfor %}
+
+
+    <button type="button" class="buttons" onclick="showHide()">Show/Hide Plots</button>
+    <div class="hidden">
+        <center><div class="plot" id="hist1" style="width:600px;height:400px;"></div></center>
+        <br>
+        <center><div class="plot" id="hist2" style="width:600px;height:400px;"></div></center>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        let history = [];
+        let sumHistory = [];
+        let show = 0;
+        function rollDices(dices){
+            let results = [];
+            for (let i = 0; i < dices; i++){
+                let result = (Math.floor(Math.random() * {{ sideNumber }}) +1);
+                results.push(result);
+                history.push(result);
+            }
+            const sum = results.reduce((partialSum, a) => partialSum + a, 0);
+            sumHistory.push(sum)
+            return results;
+        }
+        function updateNumbers(dices){
+            let diceResults = rollDices(dices);
+            for (let i= 0; i <= dices; i++){
+                $('#dice'+ i).text('Dice ' + (i + 1) + ": " + diceResults[i]);
+            }
+            updateHist();
+        }
+        function updateHist(){
+
+            let layout1 = {
+                title: {
+                    text: 'Individual Dices'
+                }
+            }
+
+            let trace1 = {
+                x: history,
+                type: 'histogram',
+                xbins: {
+                    size: 1,
+                }
+              };
+
+            let data1 = [trace1];
+            Plotly.newPlot('hist1', data1, layout1);
+
+
+            let layout2 = {
+                title: {
+                    text: 'Sum of rolls'
+                }
+            }
+            let trace2 = {
+                x: sumHistory,
+                type: 'histogram',
+                xbins: {
+                    size: 1,
+                }
+              };
+            let data2 = [trace2];
+            Plotly.newPlot('hist2', data2, layout2);
+        }
+
+        function showHide(){
+            if(show==0){
+                $(".hidden").show();
+                show = 1;
+            }
+            else{
+                $(".hidden").hide();
+                show = 0;
+            }
+        }
+
+
+
+    </script>
+{% endblock %}

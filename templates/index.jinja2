@@ -1,0 +1,14 @@
+{% extends 'base.jinja2' %}
+{% block head %}
+    <title>Index</title>
+{% endblock %}
+
+{% block content %}
+    <form class="diceNumber" action="/" method="post">
+        <label for="diceNumber">Number of dices: </label>
+        <input type="number" name="diceNumber" value="1" min="1" max="6">
+        <label for="sideNumber">Number of sides: </label>
+        <input type="number" name="sideNumber" value="6" min="1" max="20">
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}
